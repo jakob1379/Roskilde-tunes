@@ -36,7 +36,6 @@ if __name__ == '__main__':
     print("Setting up spotify api parser...")
     sp = setupSpotifyClient(username=USERNAME)
     userid = sp.client_credentials_manager.client_id
-
     if args.list_playlists:
         listPlaylists(sp, USERNAME)
         sys.exit()
