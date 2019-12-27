@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
+
+OUT="data/rfArtistNames.txt"
+content="data/url_content.html"
+
+wget "https://www.roskilde-festival.dk/en/line-up/" -q -O "$content"
+grep -oP "<a href=\"/en/years/2020/acts/\K.*\/+" "$content" |
+    sed \
+	-e 's/\///' \
+	-e 's/&#233;//' \
+	> "$OUT"
+
+rm "$content"

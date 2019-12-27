@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
+
+OUT=data/rfArtistURL.txt
+
+wget -q -O - "$@" "https://www.roskilde-festival.dk/en/line-up/" | \
+    grep -oP "<a href=\"\K/en/years/[0-9]{4}/acts/.*.*/\" class=\"name .*\">" |
+    sed \
+	-e 's/" class="name .*">//' \
+	-e 's/\//https:\/\/www.roskilde-festival.dk\//' \
+	-e 's/&#233;/é/' | \
+	sort > "$OUT"
