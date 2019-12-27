@@ -45,23 +45,22 @@ if __name__ == '__main__':
 
     print("extracting tracks from URIs...")
     tracksOnPlayList = tracksFromPlayList(sp, USERNAME, PLAYLIST)
-
     tracks = loadTrackURIs(sp, uris, load=args.read_old_songs)
 
     # only add the tracks that are not already on the PLAYLIST
     print(f"Tracks found: {len(tracks)}")
-    print(f"Tracks on PLAYLIST {len(tracksOnPlayList)}")
+    print(f"Tracks on playlist: {len(tracksOnPlayList)}")
     tracks = list(set(tracks) - set(tracksOnPlayList))
 
     if len(tracks) == 0:
         print("No new tracks to add.")
         sys.exit()
 
-    print(f"Tracks not on PLAYLIST: {len(tracks)}")
+    print(f"Tracks not on playlist: {len(tracks)}")
     ans = input("Should the missing tracks be added? [y/N] ")
 
     if ans.lower() == 'y':
-        print("adding songs to PLAYLIST...")
+        print("adding songs to playlist...")
         Bar = pbar.ProgressBar()
         for track in Bar(tracks):
             sp.user_playlist_add_tracks(userid,

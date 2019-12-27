@@ -1,5 +1,4 @@
 from spotipy.oauth2 import SpotifyClientCredentials
-import spotify.sync as spotify
 import spotipy
 import spotipy.util as util
 import progressbar as pbar
@@ -70,18 +69,28 @@ def listPlaylists(spotifyClient, username):
             print('  total tracks', playlist['tracks']['total'])
 
 
-def tracksFromPlayList(spotifyCleint, username, playlist):
-    result = spotifyCleint.user_playlist(username, playlist_id=playlist)
-    return [elem['track']['uri'] for elem in result['tracks']['items']]
+def tracksFromPlayList(spotifyClient, username, playlist): #
+    results = spotifyClient.user_playlist(username, playlist_id=playlist)
+
+    results = spotifyClient.user_playlist_tracks(username, playlist)
+    tracks = results['items']
+    while results['next']:
+        results = spotifyClient.next(results)
+        tracks.extend(results['items'])
+
+    # print(temp_tracks['name'])
+    return [track['track']['uri'] for track in tracks]
 
 
 def loadTrackURIs(spotifyClient, uris=[], load=False, save=True):
     tracks = []
     if load:
+        print("loading previous saved songs...")
         with open('data/tracks.txt') as f:
             for line in f:
                 tracks.append(line.strip())
     else:
+        print("finding artists top songs...")
         Pbar = pbar.ProgressBar()
         for uri in Pbar(uris):
             tracks += findArtistsTopN(spotifyClient, uri)
