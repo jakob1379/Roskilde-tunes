@@ -57,7 +57,7 @@ if __name__ == '__main__':
         print("No new tracks to add.")
         sys.exit()
 
-    print(f"Tracks not on playlist: {len(tracks)}")
+    print(f"Tracks with ids not on playlist: {len(tracks)}")
     ans = input("Should the missing tracks be added? [y/N] ")
 
     if ans.lower() == 'y':

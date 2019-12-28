@@ -49,7 +49,7 @@ def extractSpotifyURI():
             spotifyurls.append(spoturl)
     print(f"Found {len(spotifyurls)} artists with links to spotify")
 
-    print("Finding their URI to use with api...")
+    print("Searching for their URI to use with api...")
     Pbar = pbar.ProgressBar()
     artistURIs = []
     for url in spotifyurls:
