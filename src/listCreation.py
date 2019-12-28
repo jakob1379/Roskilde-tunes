@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
-from roskifyutils import listPlaylists, \
-    setupSpotifyClient, \
-    loadArtistURI, \
+from roskifyutils import \
+    extractSpotifyURI, \
     findArtistsTopN, \
+    listPlaylists, \
+    loadArtistURI, \
     loadTrackURIs, \
+    setupSpotifyClient, \
     tracksFromPlayList
 import argparse
 import progressbar as pbar
@@ -40,9 +42,9 @@ if __name__ == '__main__':
         listPlaylists(sp, USERNAME)
         sys.exit()
 
-    uris = loadArtistURI()
 
     print("extracting tracks from URIs...")
+    uris = extractSpotifyURI()
     tracksOnPlayList = tracksFromPlayList(sp, USERNAME, PLAYLIST)
     tracks = loadTrackURIs(sp, uris, load=args.read_old_songs)
 
