@@ -134,7 +134,6 @@ def tracksFromPlayList(spotifyClient, username, playlist): #
         results = spotifyClient.next(results)
         tracks.extend(results['items'])
 
-    # print(temp_tracks['name'])
     return [track['track']['uri'] for track in tracks]
 
 
@@ -152,7 +151,51 @@ def loadTrackURIs(spotifyClient, uris=[], load=False, save=True):
             tracks += findArtistsTopN(spotifyClient, uri)
 
         if save:
-            with open('data/tracks.txt', 'w') as f:
+            with open('data/tracks.txt', 'w+') as f:
                 for track in tracks:
                     f.write(track + '\n')
     return tracks
+
+def removeDuplicates(spotify, uris, user, playlist):
+    Pbar = pbar.ProgressBar()
+    tracks = [spotify.track(uri) for uri in Pbar(uris)]
+
+    for k, v in tracks[0].items():
+        if k not in ['album', 'available_markets', 'preview_url', 'explicit',
+                     'disc_number']:
+            print(f"{k+':':20}", v)
+
+
+    for i, track in enumerate(tracks):
+
+        otherTracks = tracks.copy()
+        otherTracks.pop(i)
+
+        for j, t in enumerate(otherTracks):
+            # check names
+            if track['name'] in t['name']:
+                # check artists
+                otherArtists = [artist['name'] for artist in t['artists']]
+                if any([artist['name'] in otherArtists for artist in track['artists']]):
+                    print()
+                    print("duplicate name found for:")
+                    print('[1] ', track['name'])
+                    print("by ", [artist['name'] for artist in track['artists']])
+                    print("Matched by: ")
+                    print('[2] ', t['name'])
+                    print("by ", [artist['name'] for artist in t['artists']])
+                    print()
+                    ans = int(input("Which one [1/2] - 0 for none: ").strip()) - 1
+                    if ans == -1:
+                        pass
+                    elif ans == 0:
+                        spotify.user_playlist_remove_all_occurrences_of_tracks(
+                            user, playlist, [track['id']])
+                        tracks.remove(track)
+                    elif ans == 1:
+                        spotify.user_playlist_remove_all_occurrences_of_tracks(
+                            user, playlist, [t['id']])
+                        tracks.remove(t)
+
+    uris = [track['uri'] for track in tracks]
+    return uris

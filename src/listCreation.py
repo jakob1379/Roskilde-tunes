@@ -5,6 +5,7 @@ from roskifyutils import \
     listPlaylists, \
     loadArtistURI, \
     loadTrackURIs, \
+    removeDuplicates, \
     setupSpotifyClient, \
     tracksFromPlayList
 import argparse
@@ -47,6 +48,9 @@ if __name__ == '__main__':
     uris = extractSpotifyURI()
     tracksOnPlayList = tracksFromPlayList(sp, USERNAME, PLAYLIST)
     tracks = loadTrackURIs(sp, uris, load=args.read_old_songs)
+    print(f"Removing duplicates...")
+    tracks = removeDuplicates(sp, list(set(tracks+tracksOnPlayList)),
+                              USERNAME, PLAYLIST)
 
     # only add the tracks that are not already on the PLAYLIST
     print(f"Tracks found: {len(tracks)}")
@@ -67,6 +71,3 @@ if __name__ == '__main__':
             sp.user_playlist_add_tracks(userid,
                                         playlist_id=PLAYLIST,
                                         tracks=[track])
-    else:
-        print('exiting...')
-        sys.exit()
