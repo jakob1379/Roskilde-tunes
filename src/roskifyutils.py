@@ -141,7 +141,7 @@ def loadTrackURIs(spotifyClient, uris=[], load=False, save=True):
     tracks = []
     if load:
         print("loading previous saved songs...")
-        with open('data/tracks.txt') as f:
+        with open('tracks.txt', 'r') as f:
             for line in f:
                 tracks.append(line.strip())
     else:
@@ -151,7 +151,7 @@ def loadTrackURIs(spotifyClient, uris=[], load=False, save=True):
             tracks += findArtistsTopN(spotifyClient, uri)
 
         if save:
-            with open('data/tracks.txt', 'w+') as f:
+            with open('tracks.txt', 'w+') as f:
                 for track in tracks:
                     f.write(track + '\n')
     return tracks
@@ -171,21 +171,25 @@ def removeDuplicates(spotify, uris, user, playlist):
         otherTracks = tracks.copy()
         otherTracks.pop(i)
 
-        for j, t in enumerate(otherTracks):
+        for t in otherTracks:
             # check names
             if track['name'] in t['name']:
                 # check artists
                 otherArtists = [artist['name'] for artist in t['artists']]
-                if any([artist['name'] in otherArtists for artist in track['artists']]):
+                if any([artist['name'] in otherArtists
+                        for artist in track['artists']]):
                     print()
                     print("duplicate name found for:")
                     print('[1] ', track['name'])
-                    print("by ", [artist['name'] for artist in track['artists']])
+                    print("by ",
+                          [artist['name'] for artist in track['artists']])
                     print("Matched by: ")
                     print('[2] ', t['name'])
-                    print("by ", [artist['name'] for artist in t['artists']])
+                    print("by ",
+                          [artist['name'] for artist in t['artists']])
                     print()
-                    ans = int(input("Which one [1/2] - 0 for none: ").strip()) - 1
+                    ans = int(
+                        input("Which one [1/2] - 0 for none: ").strip()) - 1
                     if ans == -1:
                         pass
                     elif ans == 0:

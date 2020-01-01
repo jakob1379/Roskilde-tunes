@@ -13,8 +13,10 @@ import progressbar as pbar
 import sys
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-n", "--user-name",
-                    help="Provide your user name which can be optained by going to https://open.spotify.com/ and vieweing your profile",
+parser.add_argument("-n", "--user-id",
+                    help="Provide your user id which can be optained by " +
+                    "going to https://open.spotify.com/ and vieweing "+
+                    "your profile",
                     type=str,
                     nargs='?',
                     default='1130349271')
@@ -27,30 +29,31 @@ parser.add_argument("-l", "--list-playlists",
                     help="if a user id is provided, list their playlists",
                     action='store_true')
 parser.add_argument("-r", "--read-old-songs",
-                    help="Don't fetch songs anew, but read from last run instead.",
+                    help="Don't fetch songs anew, but read from last run " +
+                    "instead.",
                     action='store_true')
 
 args = parser.parse_args()
 
-USERNAME = args.user_name       #
+USERID = args.user_id      #
 PLAYLIST = args.playlist
 
 if __name__ == '__main__':
     print("Setting up spotify api parser...")
-    sp = setupSpotifyClient(username=USERNAME)
+    sp = setupSpotifyClient(username=USERID)
     userid = sp.client_credentials_manager.client_id
     if args.list_playlists:
-        listPlaylists(sp, USERNAME)
+        listPlaylists(sp, USERID)
         sys.exit()
 
 
     print("extracting tracks from URIs...")
     uris = extractSpotifyURI()
-    tracksOnPlayList = tracksFromPlayList(sp, USERNAME, PLAYLIST)
+    tracksOnPlayList = tracksFromPlayList(sp, USERID, PLAYLIST)
     tracks = loadTrackURIs(sp, uris, load=args.read_old_songs)
     print(f"Removing duplicates...")
     tracks = removeDuplicates(sp, list(set(tracks+tracksOnPlayList)),
-                              USERNAME, PLAYLIST)
+                              USERID, PLAYLIST)
 
     # only add the tracks that are not already on the PLAYLIST
     print(f"Tracks found: {len(tracks)}")

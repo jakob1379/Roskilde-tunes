@@ -7,4 +7,4 @@
 src/.cache*
 src/__pycache__/
 src/cridentials/*
-src/data/*.txt
+src/*.txt
