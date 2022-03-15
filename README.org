@@ -3,12 +3,14 @@
 #+OPTIONS:   H:4 toc:t num:2
 #+PROPERTY:  header-args :padline no
 * Overview
-  A program written in python to autogenerate a playlist in spotify with top tracks for the announced artists at roskilde festival 22.
+  A program written in python to autogenerate a playlist in spotify with top tracks for the announced artists at Roskilde Festival 22.
 
 * Setup
-  A little credential json at ~src/creds.json~ has to be created in order to make the program run without user
-  inputs. It should contain the three variable ~client_id~, ~client_secret~, and
-  ~redirect_uri~. All of these can be found at [[https://developer.spotify.com/dashboard/applications/<app_uri>]]
+  In order to use the program you need to supply some credential through through either
+  the cli, environmental variables, or a file called ~creds.json~ residing in the ~src~
+  folder.  The three variables that has to be set are ~CLIENT_ID~, ~CLIENT_SECRET~, and
+  ~REDIRECT_URI~. All of these can be found at
+  [[https://developer.spotify.com/dashboard/applications/<app_uri>]]
 
   an example:
   #+BEGIN_SRC json
