@@ -1,0 +1,37 @@
+#+TITLE: README
+#+AUTHOR: Jakob Guldberg Aaes
+#+OPTIONS:   H:4 toc:t num:2
+#+PROPERTY:  header-args :padline no
+* Overview
+  A program written in python to autogenerate a playlist in spotify with top tracks for the announced artists at roskilde festival 22.
+
+* Setup
+  A little credential json at ~src/creds.json~ has to be created in order to make the program run without user
+  inputs. It should contain the three variable ~client_id~, ~client_secret~, and
+  ~redirect_uri~. All of these can be found at [[https://developer.spotify.com/dashboard/applications/<app_uri>]]
+
+  an example:
+  #+BEGIN_SRC json
+  {
+      "client_id":"<client_id>",
+      "client_secret":"<client_secret>",
+      "redirect_uri":"https://localhost:8080",
+      "playlist_uri":"<playlist_uri>"
+  }
+  #+END_SRC
+
+* Usage
+  The playlist generated has to be provided as an optional argument or set as an environment variable with ~export PLAYLIST_URI="<playlist_uri>"~. General usage is:
+  #+BEGIN_SRC bash
+ $ python roskilde_bot.py -h
+usage: roskilde_bot.py [-h] [-p [playlist-uri]] [-c [country]] [-n [n-tracks]]
+
+options:
+  -h, --help            show this help message and exit
+  -p [playlist-uri], --playlist-uri [playlist-uri]
+                        Playlist uri - not necessary if set as env-variable
+  -c [country], --country [country]
+                        Country to get top tracks from
+  -n [n-tracks], --n-tracks [n-tracks]
+                        Number of maximum tracks for each artist
+  #+END_SRC
