@@ -2,24 +2,26 @@ import argparse
 
 from rich import print
 
-import utils
-from utils import (
-    artists_top_tracks,
+import html_utils
+
+from html_utils import (
     get_artist_urls,
     get_uris_from_urls,
-    loadCridentials,
+)
+
+from spotify_utils import (
+    artists_top_tracks,
+    load_credentials,
     populate_playlist,
     setup_spotify_client,
-    loadCridentials,
+    load_credentials,
 )
 import os
-
-playlist_uri = "09zoWGVW99ojUFnRnLmil4"
 
 
 def fill_env_creds(args):
     valid_tokens = ["CLIENT_ID", "CLIENT_SECRET", "REDIRECT_URI", "PLAYLIST_URI"]
-    creds = loadCridentials()
+    creds = load_credentials()
 
     for token in valid_tokens:
         if not getattr(args, token.lower()):
@@ -87,6 +89,9 @@ def setup_args():
         nargs="?",
         default=5,
     )
+    parser.add_argument(
+        "-q", "--quiet", help="do not produce print anything", action="store_true"
+    )
 
     args = parser.parse_args()
     args = fill_env_creds(args)
@@ -98,19 +103,26 @@ def main():
     args = setup_args()
 
     # Roskilde content section
-    print(f"[bold cyan]Fetching artist uris from {utils.base_url}[/bold cyan]")
+    if not args.quiet:
+        print(f"[bold cyan]Fetching artist uris from {html_utils.BASE_URL}[/bold cyan]")
     artist_urls = get_artist_urls()
-    artist_uris = get_uris_from_urls(artist_urls)
+    artist_uris = get_uris_from_urls(artist_urls, verbose=(not args.quiet))
 
     # Spotify section
-    print("[bold cyan]Fetching artist top tracks[/bold cyan]")
+    if not args.quiet:
+        print("[bold cyan]Fetching artist top tracks[/bold cyan]")
     spotify_client = setup_spotify_client(args)
     top_tracks = artists_top_tracks(
-        artist_uris, spotify_client, country=args.country, max_tracks=args.n_tracks
+        artist_uris,
+        spotify_client,
+        country=args.country,
+        max_tracks=args.n_tracks,
+        verbose=(not args.quiet),
     )
 
-    print("[bold cyan]Adding tracks to playlist[/bold cyan]")
-    populate_playlist(top_tracks, playlist_uri, spotify_client)
+    if not args.quiet:
+        print("[bold cyan]Adding tracks to playlist[/bold cyan]")
+    populate_playlist(top_tracks, playlist_uri, spotify_client, verbose=(not args.quiet))
 
 
 if __name__ == "__main__":
