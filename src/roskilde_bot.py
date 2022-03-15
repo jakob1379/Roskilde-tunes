@@ -7,10 +7,10 @@ from utils import (
     artists_top_tracks,
     get_artist_urls,
     get_uris_from_urls,
-    loadCridentials,
+    load_credentials,
     populate_playlist,
     setup_spotify_client,
-    loadCridentials,
+    load_credentials,
 )
 import os
 
@@ -19,7 +19,7 @@ playlist_uri = "09zoWGVW99ojUFnRnLmil4"
 
 def fill_env_creds(args):
     valid_tokens = ["CLIENT_ID", "CLIENT_SECRET", "REDIRECT_URI", "PLAYLIST_URI"]
-    creds = loadCridentials()
+    creds = load_credentials()
 
     for token in valid_tokens:
         if not getattr(args, token.lower()):
