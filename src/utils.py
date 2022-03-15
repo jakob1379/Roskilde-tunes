@@ -1,7 +1,7 @@
 import json
 import re
 from itertools import chain
-
+from pathlib import Path
 import requests
 import spotipy
 from bs4 import BeautifulSoup
@@ -60,14 +60,15 @@ def get_uris_from_urls(artist_urls):
     return spotify_uris
 
 
-def loadCridentials():
-    with open("creds.json", "rb") as f:
-        creds = json.load(f)
-    return creds
+def loadCridentials(fname='creds.json'):
+    if Path(fname).is_file():
+        with open(fname, "rb") as f:
+            creds = json.load(f)
+        return creds
+    return {}
 
 
-def setup_spotify_client():
-    creds = loadCridentials()
+def setup_spotify_client(args):
 
     # Timeouts
     max_artist_time = 10  # seconds
@@ -79,9 +80,9 @@ def setup_spotify_client():
     sp = spotipy.Spotify(
         auth_manager=SpotifyOAuth(
             scope=scope,
-            client_id=creds["client_id"],
-            client_secret=creds["client_secret"],
-            redirect_uri=creds["redirect_uri"],
+            client_id=args.client_id,
+            client_secret=args.client_secret,
+            redirect_uri=args.redirect_uri,
         )
     )
     return sp
@@ -100,5 +101,5 @@ def artists_top_tracks(artist_uris, client, country="DK", max_tracks=5):
 
 def populate_playlist(tracks, playlist_uri, client):
     client.playlist_replace_items(playlist_uri, [])
-    for i in range(0, len(tracks), 100):
+    for i in track(range(0, len(tracks), 100)):
         client.playlist_add_items(playlist_uri, tracks[i : i + 100])

@@ -10,26 +10,65 @@ from utils import (
     loadCridentials,
     populate_playlist,
     setup_spotify_client,
-    loadCridentials
+    loadCridentials,
 )
 import os
 
 playlist_uri = "09zoWGVW99ojUFnRnLmil4"
 
 
+def fill_env_creds(args):
+    valid_tokens = ["CLIENT_ID", "CLIENT_SECRET", "REDIRECT_URI", "PLAYLIST_URI"]
+    creds = loadCridentials()
+
+    for token in valid_tokens:
+        if not getattr(args, token.lower()):
+            if value := os.environ.get(token):
+                setattr(args, token.lower(), value)
+            elif value := creds.get(token):
+                setattr(args, token.lower(), value)
+    return args
+
+
 def setup_args():
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
-        "-p",
-        "--playlist-uri",
-        help="Playlist uri - not necessary if set as env-variable",
-        metavar="playlist-uri",
+        "-i",
+        "--client-id",
+        help="Client id",
+        type=str,
+        nargs="?",
+        default="",
+        metavar="CLIENT-ID",
+    )
+    parser.add_argument(
+        "-s",
+        "--client-secret",
+        help="Client secret",
+        metavar="CLIENT-SECRET",
         type=str,
         nargs="?",
         default="",
     )
-
+    parser.add_argument(
+        "-r",
+        "--redirect-uri",
+        help="Redirect uri from spotify dashboard settings",
+        metavar="REDIRECT-URI",
+        type=str,
+        nargs="?",
+        default="",
+    )
+    parser.add_argument(
+        "-p",
+        "--playlist-uri",
+        help="Playlist uri",
+        metavar="PLAYLIST-URI",
+        type=str,
+        nargs="?",
+        default="",
+    )
     parser.add_argument(
         "-c",
         "--country",
@@ -50,9 +89,7 @@ def setup_args():
     )
 
     args = parser.parse_args()
-
-    if not args.playlist_uri and (playlist_uri := os.environ.get("PLAYLIST_URI")):
-        args.playlist_uri = playlist_uri
+    args = fill_env_creds(args)
 
     return args
 
@@ -67,7 +104,7 @@ def main():
 
     # Spotify section
     print("[bold cyan]Fetching artist top tracks[/bold cyan]")
-    spotify_client = setup_spotify_client()
+    spotify_client = setup_spotify_client(args)
     top_tracks = artists_top_tracks(
         artist_uris, spotify_client, country=args.country, max_tracks=args.n_tracks
     )
