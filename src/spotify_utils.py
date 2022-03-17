@@ -46,7 +46,7 @@ def setup_spotify_client(args):
 
 
 @timeout(max_top_track_time)
-def artists_top_tracks(artist_uris, client, country="DK", max_tracks=5):
+def artists_top_tracks(artist_uris, client, country="DK", max_tracks=5, verbose=True):
     all_tracks = []
     for artist_uri in track(artist_uris):
         tracks = client.artist_top_tracks(artist_uri, country=country)["tracks"]
@@ -56,7 +56,7 @@ def artists_top_tracks(artist_uris, client, country="DK", max_tracks=5):
     return all_tracks
 
 
-def populate_playlist(tracks, playlist_uri, client):
+def populate_playlist(tracks, playlist_uri, client, verbose=True):
     client.playlist_replace_items(playlist_uri, [])
-    for i in track(range(0, len(tracks), 100)):
+    for i in track(range(0, len(tracks), 100), disable=(not verbose)):
         client.playlist_add_items(playlist_uri, tracks[i : i + 100])

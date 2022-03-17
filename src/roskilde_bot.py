@@ -122,7 +122,9 @@ def main():
 
     if not args.quiet:
         print("[bold cyan]Adding tracks to playlist[/bold cyan]")
-    populate_playlist(top_tracks, playlist_uri, spotify_client, verbose=(not args.quiet))
+    populate_playlist(
+        top_tracks, args.playlist_uri, spotify_client, verbose=(not args.quiet)
+    )
 
 
 if __name__ == "__main__":
