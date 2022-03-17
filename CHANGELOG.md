@@ -1,3 +1,13 @@
+## 1.1.1 (2022-03-17)
+
+### Fix
+
+- bugfixes which made the code unusable
+- split utils to relevant util files
+- split utils to relevant util files
+
+## credential-handling (2022-03-15)
+
 ## 1.1.0 (2022-03-15)
 
 ### Feat
